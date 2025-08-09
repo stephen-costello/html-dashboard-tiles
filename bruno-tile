@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruno API Testing Tile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .tile-container {
+            perspective: 1000px;
+        }
+
+        .bruno-tile {
+            width: 280px;
+            height: 160px;
+            background: linear-gradient(135deg, #cc5500 0%, #b8460e 50%, #a03c0a 100%);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            box-shadow: 0 8px 32px rgba(204, 85, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid #d46614;
+            cursor: pointer;
+        }
+
+        .bruno-tile:hover {
+            transform: translateY(-8px) rotateY(-5deg) rotateX(5deg) scale(1.02);
+            box-shadow: 0 20px 60px rgba(204, 85, 0, 0.4);
+            background: linear-gradient(135deg, #d46614 0%, #cc5500 50%, #b8460e 100%);
+            border-color: #ff7b29;
+        }
+
+        .bruno-tile:active {
+            transform: translateY(-4px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+
+        .tile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .bruno-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s infinite;
+            position: relative;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .bruno-logo {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+        }
+
+        .tile-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: #ffffff;
+            text-shadow: none;
+        }
+
+        .tile-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+            margin: 4px 0 0 0;
+            font-weight: 400;
+            color: #cccccc;
+        }
+
+        .tile-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .api-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            color: #cccccc;
+        }
+
+        .api-requests {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .request-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: requestPulse 2s infinite ease-in-out;
+        }
+
+        .request-dot:nth-child(1) { 
+            background: #28a745; 
+            animation-delay: 0s; 
+        }
+        .request-dot:nth-child(2) { 
+            background: #ffc107; 
+            animation-delay: 0.3s; 
+        }
+        .request-dot:nth-child(3) { 
+            background: #ff7b29; 
+            animation-delay: 0.6s; 
+        }
+        .request-dot:nth-child(4) { 
+            background: #dc3545; 
+            animation-delay: 0.9s; 
+        }
+        .request-dot:nth-child(5) { 
+            background: #17a2b8; 
+            animation-delay: 1.2s; 
+        }
+
+        @keyframes requestPulse {
+            0%, 70%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            35% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+
+        .download-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .bruno-tile:hover .download-icon {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-20px, -20px) rotate(360deg); }
+        }
+
+        .shine-effect {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .bruno-tile:hover .shine-effect {
+            left: 100%;
+        }
+
+        .download-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: statusPulse 2.5s infinite;
+        }
+
+        .status-dot:nth-child(1) {
+            background: #28a745;
+            animation-delay: 0s;
+        }
+
+        .status-dot:nth-child(2) {
+            background: #ff7b29;
+            animation-delay: 0.8s;
+        }
+
+        .status-dot:nth-child(3) {
+            background: #ffc107;
+            animation-delay: 1.6s;
+        }
+
+        @keyframes statusPulse {
+            0%, 70%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            35% {
+                transform: scale(1.4);
+                opacity: 1;
+            }
+        }
+
+        .download-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .download-notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 320px) {
+            .bruno-tile {
+                width: 100%;
+                min-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tile-container">
+        <div class="bruno-tile" onclick="downloadCollection()">
+            <div class="background-pattern"></div>
+            <div class="shine-effect"></div>
+            <div class="download-status">
+                <div class="status-dot"></div>
+                <div class="status-dot"></div>
+                <div class="status-dot"></div>
+            </div>
+            
+            <div class="tile-header">
+                <div class="bruno-icon">
+                    🐕
+                </div>
+                <div>
+                    <h3 class="tile-title">Bruno API</h3>
+                    <p class="tile-subtitle">Customer Comments Collection</p>
+                </div>
+            </div>
+            
+            <div class="tile-footer">
+                <div class="api-indicator">
+                    <div class="api-requests">
+                        <div class="request-dot"></div>
+                        <div class="request-dot"></div>
+                        <div class="request-dot"></div>
+                        <div class="request-dot"></div>
+                        <div class="request-dot"></div>
+                    </div>
+                    <span>Download</span>
+                </div>
+                <div class="download-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 16L7 11L8.4 9.6L11 12.2V4H13V12.2L15.6 9.6L17 11L12 16Z" fill="#cccccc"/>
+                        <path d="M5 20V18H19V20H5Z" fill="#cccccc"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download notification -->
+    <div class="download-notification" id="notification">
+        📦 Bruno Collection Downloaded!
+    </div>
+
+    <script>
+        // Create the placeholder ZIP file content
+        function createBrunoCollection() {
+            // This creates a simple text file that would be zipped
+            const collectionData = {
+                "bruno": {
+                    "version": "1.0",
+                    "name": "Customer Comments API Collection",
+                    "description": "Complete API testing collection for Customer Comments application"
+                },
+                "requests": [
+                    {
+                        "name": "Get All Comments",
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/comments",
+                        "headers": {
+                            "Authorization": "Bearer {{authToken}}",
+                            "Content-Type": "application/json"
+                        },
+                        "tests": [
+                            "expect(response.status).toBe(200)",
+                            "expect(response.body.comments).toBeDefined()"
+                        ]
+                    },
+                    {
+                        "name": "Create Comment",
+                        "method": "POST",
+                        "url": "{{baseUrl}}/api/comments",
+                        "headers": {
+                            "Authorization": "Bearer {{authToken}}",
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "text": "This is a test comment",
+                            "userId": "{{userId}}",
+                            "postId": "{{postId}}"
+                        },
+                        "tests": [
+                            "expect(response.status).toBe(201)",
+                            "expect(response.body.id).toBeDefined()"
+                        ]
+                    },
+                    {
+                        "name": "Update Comment",
+                        "method": "PUT",
+                        "url": "{{baseUrl}}/api/comments/{{commentId}}",
+                        "headers": {
+                            "Authorization": "Bearer {{authToken}}",
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "text": "Updated comment text"
+                        },
+                        "tests": [
+                            "expect(response.status).toBe(200)"
+                        ]
+                    },
+                    {
+                        "name": "Delete Comment",
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/api/comments/{{commentId}}",
+                        "headers": {
+                            "Authorization": "Bearer {{authToken}}"
+                        },
+                        "tests": [
+                            "expect(response.status).toBe(204)"
+                        ]
+                    },
+                    {
+                        "name": "Get User Comments",
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/users/{{userId}}/comments",
+                        "headers": {
+                            "Authorization": "Bearer {{authToken}}"
+                        },
+                        "tests": [
+                            "expect(response.status).toBe(200)",
+                            "expect(Array.isArray(response.body.comments)).toBe(true)"
+                        ]
+                    }
+                ],
+                "environments": [
+                    {
+                        "name": "Development",
+                        "variables": {
+                            "baseUrl": "http://localhost:3000",
+                            "authToken": "dev_token_here",
+                            "userId": "dev_user_123",
+                            "postId": "dev_post_456",
+                            "commentId": "dev_comment_789"
+                        }
+                    },
+                    {
+                        "name": "Staging",
+                        "variables": {
+                            "baseUrl": "https://staging.comments-app.com",
+                            "authToken": "staging_token_here",
+                            "userId": "staging_user_123",
+                            "postId": "staging_post_456",
+                            "commentId": "staging_comment_789"
+                        }
+                    },
+                    {
+                        "name": "Production",
+                        "variables": {
+                            "baseUrl": "https://comments-app.com",
+                            "authToken": "prod_token_here",
+                            "userId": "prod_user_123",
+                            "postId": "prod_post_456",
+                            "commentId": "prod_comment_789"
+                        }
+                    }
+                ],
+                "readme": `# Customer Comments API Collection
+
+This Bruno collection contains comprehensive API tests for the Customer Comments application.
+
+## Setup Instructions
+
+1. Import this collection into Bruno
+2. Select your target environment (Dev/Staging/Prod)
+3. Update the environment variables with your actual values
+4. Run individual requests or the entire collection
+
+## Environment Variables
+
+- \`baseUrl\`: The base URL of your API
+- \`authToken\`: Your authentication token
+- \`userId\`: Test user ID
+- \`postId\`: Test post ID
+- \`commentId\`: Test comment ID
+
+## Test Coverage
+
+- ✅ Get all comments
+- ✅ Create new comment
+- ✅ Update existing comment
+- ✅ Delete comment
+- ✅ Get user-specific comments
+
+## Authentication
+
+All requests require a Bearer token in the Authorization header.
+Update the \`authToken\` variable in your selected environment.
+
+## Happy Testing! 🚀`
+            };
+
+            return JSON.stringify(collectionData, null, 2);
+        }
+
+        function downloadCollection() {
+            // Create the file content
+            const content = createBrunoCollection();
+            
+            // Create a blob with the content
+            const blob = new Blob([content], { type: 'application/json' });
+            
+            // Create a download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'customer-comments-bruno-collection.json';
+            
+            // Trigger the download
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            // Clean up the URL object
+            window.URL.revokeObjectURL(url);
+            
+            // Show notification
+            showNotification();
+        }
+
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
