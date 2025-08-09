@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins Core Tile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .tile-container {
+            perspective: 1000px;
+        }
+
+        .jenkins-tile {
+            width: 280px;
+            height: 160px;
+            background: linear-gradient(135deg, #335061 0%, #2b4450 50%, #1e2f38 100%);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            box-shadow: 0 8px 32px rgba(51, 80, 97, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid #4a6c7a;
+        }
+
+        .jenkins-tile:hover {
+            transform: translateY(-8px) rotateY(-5deg) rotateX(5deg) scale(1.02);
+            box-shadow: 0 20px 60px rgba(51, 80, 97, 0.4);
+            background: linear-gradient(135deg, #3d5d71 0%, #335061 50%, #2b4450 100%);
+            border-color: #f37321;
+        }
+
+        .jenkins-tile:active {
+            transform: translateY(-4px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+
+        .tile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .jenkins-icon {
+            width: 40px;
+            height: 40px;
+            background: #f37321;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s infinite;
+            position: relative;
+        }
+
+        .jenkins-logo {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(243, 115, 33, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(243, 115, 33, 0);
+            }
+        }
+
+        .tile-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: #ffffff;
+            text-shadow: none;
+        }
+
+        .tile-subtitle {
+            font-size: 12px;
+            opacity: 0.7;
+            margin: 4px 0 0 0;
+            font-weight: 400;
+            color: #a0b4c0;
+        }
+
+        .tile-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .build-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            color: #a0b4c0;
+        }
+
+        .build-status {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .build-bar {
+            width: 4px;
+            border-radius: 2px;
+            animation: buildProgress 2s infinite ease-in-out;
+        }
+
+        .build-bar:nth-child(1) { 
+            height: 8px; 
+            background: #4caf50; 
+            animation-delay: 0s; 
+        }
+        .build-bar:nth-child(2) { 
+            height: 12px; 
+            background: #4caf50; 
+            animation-delay: 0.2s; 
+        }
+        .build-bar:nth-child(3) { 
+            height: 10px; 
+            background: #ff9800; 
+            animation-delay: 0.4s; 
+        }
+        .build-bar:nth-child(4) { 
+            height: 6px; 
+            background: #4caf50; 
+            animation-delay: 0.6s; 
+        }
+
+        @keyframes buildProgress {
+            0%, 70%, 100% {
+                transform: scaleY(0.6);
+                opacity: 0.7;
+            }
+            35% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        .arrow-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .jenkins-tile:hover .arrow-icon {
+            background: rgba(243, 115, 33, 0.2);
+            transform: translateX(4px);
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-20px, -20px) rotate(360deg); }
+        }
+
+        .shine-effect {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .jenkins-tile:hover .shine-effect {
+            left: 100%;
+        }
+
+        .pipeline-indicators {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .pipeline-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: pipelinePulse 3s infinite;
+        }
+
+        .pipeline-dot:nth-child(1) {
+            background: #4caf50;
+            animation-delay: 0s;
+        }
+
+        .pipeline-dot:nth-child(2) {
+            background: #ff9800;
+            animation-delay: 1s;
+        }
+
+        .pipeline-dot:nth-child(3) {
+            background: #2196f3;
+            animation-delay: 2s;
+        }
+
+        @keyframes pipelinePulse {
+            0%, 70%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            35% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .jenkins-tile {
+                width: 100%;
+                min-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tile-container">
+        <a href="https://www.jenkins.io/doc/" target="_blank" class="jenkins-tile">
+            <div class="background-pattern"></div>
+            <div class="shine-effect"></div>
+            <div class="pipeline-indicators">
+                <div class="pipeline-dot"></div>
+                <div class="pipeline-dot"></div>
+                <div class="pipeline-dot"></div>
+            </div>
+            
+            <div class="tile-header">
+                <div class="jenkins-icon">
+                    <svg class="jenkins-logo" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L14.5 8.5L21 9L16 14L17.5 21L12 18L6.5 21L8 14L3 9L9.5 8.5L12 2Z" fill="currentColor"/>
+                        <rect x="10" y="10" width="4" height="8" rx="2" fill="currentColor"/>
+                        <circle cx="12" cy="7" r="2" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="tile-title">Customer Comments</h3>
+                    <p class="tile-subtitle">Jenkins Core</p>
+                </div>
+            </div>
+            
+            <div class="tile-footer">
+                <div class="build-indicator">
+                    <div class="build-status">
+                        <div class="build-bar"></div>
+                        <div class="build-bar"></div>
+                        <div class="build-bar"></div>
+                        <div class="build-bar"></div>
+                    </div>
+                    <span>Building</span>
+                </div>
+                <div class="arrow-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M4 9L8 5L4 1" stroke="#a0b4c0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </a>
+    </div>
+</body>
+</html>
