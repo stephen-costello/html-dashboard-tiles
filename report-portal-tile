@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReportPortal Tile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .tile-container {
+            perspective: 1000px;
+        }
+
+        .reportportal-tile {
+            width: 280px;
+            height: 160px;
+            background: linear-gradient(135deg, #7c4dff 0%, #6a1b9a 50%, #4a148c 100%);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            box-shadow: 0 8px 32px rgba(124, 77, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid #9c27b0;
+        }
+
+        .reportportal-tile:hover {
+            transform: translateY(-8px) rotateY(5deg) rotateX(5deg) scale(1.02);
+            box-shadow: 0 20px 60px rgba(124, 77, 255, 0.4);
+            background: linear-gradient(135deg, #9c27b0 0%, #7c4dff 50%, #6a1b9a 100%);
+            border-color: #e1bee7;
+        }
+
+        .reportportal-tile:active {
+            transform: translateY(-4px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+
+        .tile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .reportportal-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s infinite;
+            position: relative;
+        }
+
+        .reportportal-logo {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+        }
+
+        .tile-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: #ffffff;
+            text-shadow: none;
+        }
+
+        .tile-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+            margin: 4px 0 0 0;
+            font-weight: 400;
+            color: #e1bee7;
+        }
+
+        .tile-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .test-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            color: #e1bee7;
+        }
+
+        .test-results {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .result-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: resultPulse 2s infinite ease-in-out;
+        }
+
+        .result-dot:nth-child(1) { 
+            background: #4caf50; 
+            animation-delay: 0s; 
+        }
+        .result-dot:nth-child(2) { 
+            background: #4caf50; 
+            animation-delay: 0.2s; 
+        }
+        .result-dot:nth-child(3) { 
+            background: #ff9800; 
+            animation-delay: 0.4s; 
+        }
+        .result-dot:nth-child(4) { 
+            background: #f44336; 
+            animation-delay: 0.6s; 
+        }
+        .result-dot:nth-child(5) { 
+            background: #4caf50; 
+            animation-delay: 0.8s; 
+        }
+
+        @keyframes resultPulse {
+            0%, 70%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            35% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+
+        .arrow-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .reportportal-tile:hover .arrow-icon {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-20px, -20px) rotate(360deg); }
+        }
+
+        .shine-effect {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .reportportal-tile:hover .shine-effect {
+            left: 100%;
+        }
+
+        .analytics-indicators {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .analytics-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: analyticsPulse 3s infinite;
+        }
+
+        .analytics-dot:nth-child(1) {
+            background: #4caf50;
+            animation-delay: 0s;
+        }
+
+        .analytics-dot:nth-child(2) {
+            background: #ff9800;
+            animation-delay: 1s;
+        }
+
+        .analytics-dot:nth-child(3) {
+            background: #f44336;
+            animation-delay: 2s;
+        }
+
+        @keyframes analyticsPulse {
+            0%, 70%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            35% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .reportportal-tile {
+                width: 100%;
+                min-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tile-container">
+        <a href="https://reportportal.io/docs/" target="_blank" class="reportportal-tile">
+            <div class="background-pattern"></div>
+            <div class="shine-effect"></div>
+            <div class="analytics-indicators">
+                <div class="analytics-dot"></div>
+                <div class="analytics-dot"></div>
+                <div class="analytics-dot"></div>
+            </div>
+            
+            <div class="tile-header">
+                <div class="reportportal-icon">
+                    <svg class="reportportal-logo" viewBox="0 0 24 24" fill="none">
+                        <!-- ReportPortal inspired logo with analytics/reporting theme -->
+                        <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <!-- Chart bars representing analytics -->
+                        <rect x="6" y="12" width="2" height="5" fill="currentColor"/>
+                        <rect x="9" y="10" width="2" height="7" fill="currentColor"/>
+                        <rect x="12" y="8" width="2" height="9" fill="currentColor"/>
+                        <rect x="15" y="11" width="2" height="6" fill="currentColor"/>
+                        <!-- Portal/circular element -->
+                        <circle cx="18" cy="7" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="18" cy="7" r="0.5" fill="currentColor"/>
+                        <!-- Data flow lines -->
+                        <path d="M16 7 L14 9" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+                        <path d="M16 7 L11 8.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="tile-title">Customer Comments</h3>
+                    <p class="tile-subtitle">Report Portal Results</p>
+                </div>
+            </div>
+            
+            <div class="tile-footer">
+                <div class="test-indicator">
+                    <div class="test-results">
+                        <div class="result-dot"></div>
+                        <div class="result-dot"></div>
+                        <div class="result-dot"></div>
+                        <div class="result-dot"></div>
+                        <div class="result-dot"></div>
+                    </div>
+                    <span>Results</span>
+                </div>
+                <div class="arrow-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M4 9L8 5L4 1" stroke="#e1bee7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </a>
+    </div>
+</body>
+</html>
